@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stusys.dao.StudentMapper">
+  <resultMap id="BaseResultMap" type="com.stusys.entity.Student">
+    <id column="s_id" jdbcType="INTEGER" property="sId" />
+    <result column="s_name" jdbcType="VARCHAR" property="sName" />
+    <result column="s_gender" jdbcType="VARCHAR" property="sGender" />
+    <result column="s_dep" jdbcType="INTEGER" property="sDep" />
+    <result column="s_major" jdbcType="INTEGER" property="sMajor" />
+    <result column="s_class" jdbcType="INTEGER" property="sClass" />
+    <result column="s_birthday" jdbcType="TIMESTAMP" property="sBirthday" />
+  </resultMap>
+  <resultMap id="DetailedResultMap" extends="BaseResultMap" type="com.stusys.entity.Student">
+    <association property="department" javaType="com.stusys.entity.Department">
+      <id property="dId" column="d_id" jdbcType="INTEGER"/>
+      <result property="dName" column="d_name" jdbcType="VARCHAR"/>
+    </association>
+    <association property="major" javaType="com.stusys.entity.Major">
+      <id column="m_id" property="mId" jdbcType="INTEGER" />
+      <result column="m_name" property="mName" jdbcType="VARCHAR" />
+      <result column="m_teacher" property="mTeacher" jdbcType="INTEGER" />
+      <result column="m_dep" property="mDep" jdbcType="INTEGER" />
+    </association>
+    <association property="classes" javaType="com.stusys.entity.Classes">
+      <id column="cl_id" property="clId" jdbcType="INTEGER" />
+      <result column="cl_name" property="clName" jdbcType="VARCHAR" />
+      <result column="cl_teacher" property="clTeacher" jdbcType="INTEGER" />
+      <result column="cl_major" property="clMajor" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    s_id, s_name, s_gender, s_dep, s_major, s_class, s_birthday
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from student
+    where s_id = #{sId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from student
+    where s_id = #{sId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.stusys.entity.Student">
+    insert into student (s_id, s_name, s_gender, 
+      s_dep, s_major, s_class, 
+      s_birthday)
+    values (#{sId,jdbcType=INTEGER}, #{sName,jdbcType=VARCHAR}, #{sGender,jdbcType=VARCHAR}, 
+      #{sDep,jdbcType=INTEGER}, #{sMajor,jdbcType=INTEGER}, #{sClass,jdbcType=INTEGER}, 
+      #{sBirthday,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.stusys.entity.Student">
+    insert into student
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="sId != null">
+        s_id,
+      </if>
+      <if test="sName != null">
+        s_name,
+      </if>
+      <if test="sGender != null">
+        s_gender,
+      </if>
+      <if test="sDep != null">
+        s_dep,
+      </if>
+      <if test="sMajor != null">
+        s_major,
+      </if>
+      <if test="sClass != null">
+        s_class,
+      </if>
+      <if test="sBirthday != null">
+        s_birthday,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="sId != null">
+        #{sId,jdbcType=INTEGER},
+      </if>
+      <if test="sName != null">
+        #{sName,jdbcType=VARCHAR},
+      </if>
+      <if test="sGender != null">
+        #{sGender,jdbcType=VARCHAR},
+      </if>
+      <if test="sDep != null">
+        #{sDep,jdbcType=INTEGER},
+      </if>
+      <if test="sMajor != null">
+        #{sMajor,jdbcType=INTEGER},
+      </if>
+      <if test="sClass != null">
+        #{sClass,jdbcType=INTEGER},
+      </if>
+      <if test="sBirthday != null">
+        #{sBirthday,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.stusys.entity.Student">
+    update student
+    <set>
+      <if test="sName != null">
+        s_name = #{sName,jdbcType=VARCHAR},
+      </if>
+      <if test="sGender != null">
+        s_gender = #{sGender,jdbcType=VARCHAR},
+      </if>
+      <if test="sDep != null">
+        s_dep = #{sDep,jdbcType=INTEGER},
+      </if>
+      <if test="sMajor != null">
+        s_major = #{sMajor,jdbcType=INTEGER},
+      </if>
+      <if test="sClass != null">
+        s_class = #{sClass,jdbcType=INTEGER},
+      </if>
+      <if test="sBirthday != null">
+        s_birthday = #{sBirthday,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where s_id = #{sId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.stusys.entity.Student">
+    update student
+    set s_name = #{sName,jdbcType=VARCHAR},
+      s_gender = #{sGender,jdbcType=VARCHAR},
+      s_dep = #{sDep,jdbcType=INTEGER},
+      s_major = #{sMajor,jdbcType=INTEGER},
+      s_class = #{sClass,jdbcType=INTEGER},
+      s_birthday = #{sBirthday,jdbcType=TIMESTAMP}
+    where s_id = #{sId,jdbcType=INTEGER}
+  </update>
+
+  <select id="findAllStu" resultMap="DetailedResultMap">
+    select *
+    from student s,department d,major m,classes cl
+    where s.s_dep=d.d_id and s.s_major=m.m_id and s.s_class=cl.cl_id
+  </select>
+
+  <delete id="deleteStudentById" parameterType="java.util.List">
+    delete from student where s_id in
+    <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>

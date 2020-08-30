@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stusys.dao.MajorMapper" >
+  <resultMap id="BaseResultMap" type="com.stusys.entity.Major" >
+    <id column="m_id" property="mId" jdbcType="INTEGER" />
+    <result column="m_name" property="mName" jdbcType="VARCHAR" />
+    <result column="m_teacher" property="mTeacher" jdbcType="INTEGER" />
+    <result column="m_dep" property="mDep" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="withTeacherMap" extends="BaseResultMap" type="com.stusys.entity.Major">
+    <association property="teacher" select="com.stusys.dao.TeacherMapper.selectByPrimaryKey" column="m_teacher"></association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    m_id, m_name, m_teacher, m_dep
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from major
+    where m_id = #{mId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findMajorsByDep" resultMap="withTeacherMap">
+    select * from major where m_dep=#{dId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from major
+    where m_id = #{mId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="delMajorByIds" parameterType="java.util.List">
+    delete from major where m_id in
+    <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.stusys.entity.Major" >
+    insert into major (m_id, m_name, m_teacher, 
+      m_dep)
+    values (#{mId,jdbcType=INTEGER}, #{mName,jdbcType=VARCHAR}, #{mTeacher,jdbcType=INTEGER}, 
+      #{mDep,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.stusys.entity.Major" >
+    insert into major
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        m_id,
+      </if>
+      <if test="mName != null" >
+        m_name,
+      </if>
+      <if test="mTeacher != null" >
+        m_teacher,
+      </if>
+      <if test="mDep != null" >
+        m_dep,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="mId != null" >
+        #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="mName != null" >
+        #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mTeacher != null" >
+        #{mTeacher,jdbcType=INTEGER},
+      </if>
+      <if test="mDep != null" >
+        #{mDep,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.stusys.entity.Major" >
+    update major
+    <set >
+      <if test="mName != null" >
+        m_name = #{mName,jdbcType=VARCHAR},
+      </if>
+      <if test="mTeacher != null" >
+        m_teacher = #{mTeacher,jdbcType=INTEGER},
+      </if>
+      <if test="mDep != null" >
+        m_dep = #{mDep,jdbcType=INTEGER},
+      </if>
+    </set>
+    where m_id = #{mId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.stusys.entity.Major" >
+    update major
+    set m_name = #{mName,jdbcType=VARCHAR},
+      m_teacher = #{mTeacher,jdbcType=INTEGER},
+      m_dep = #{mDep,jdbcType=INTEGER}
+    where m_id = #{mId,jdbcType=INTEGER}
+  </update>
+</mapper>

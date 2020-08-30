@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stusys.dao.CourseMapper">
+    <resultMap id="BaseResultMap" type="com.stusys.entity.Course">
+        <id column="c_id" jdbcType="INTEGER" property="cId"/>
+        <result column="c_name" jdbcType="VARCHAR" property="cName"/>
+        <result column="t_id" jdbcType="INTEGER" property="tId"/>
+        <result column="c_type" jdbcType="VARCHAR" property="cType"/>
+        <result column="c_credit" jdbcType="INTEGER" property="cCredit"/>
+        <result column="c_period" jdbcType="INTEGER" property="cPeriod"/>
+        <result column="c_time" jdbcType="TIMESTAMP" property="cTime"/>
+        <result column="c_unit" jdbcType="INTEGER" property="cUnit"/>
+    </resultMap>
+    <resultMap id="DetailedResultMap" type="com.stusys.entity.Course" extends="BaseResultMap">
+        <association property="department" javaType="com.stusys.entity.Department">
+            <id column="d_id" jdbcType="INTEGER" property="dId"/>
+            <result column="d_name" jdbcType="VARCHAR" property="dName"/>
+        </association>
+        <association property="teacher" javaType="com.stusys.entity.Teacher">
+            <id column="t_id" jdbcType="INTEGER" property="tId"/>
+            <result column="t_name" jdbcType="VARCHAR" property="tName"/>
+            <result column="t_gender" jdbcType="VARCHAR" property="tGender"/>
+            <result column="t_dep" jdbcType="INTEGER" property="tDep"/>
+            <result column="t_tel" jdbcType="VARCHAR" property="tTel"/>
+            <result column="t_birthday" jdbcType="TIMESTAMP" property="tBirthday"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+        c_id, c_name, t_id, c_type, c_credit, c_period, c_time, c_unit
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from course
+        where c_id = #{cId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from course
+        where c_id = #{cId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.stusys.entity.Course">
+        insert into course (c_id, c_name, t_id,
+        c_type, c_credit, c_period,
+        c_time, c_unit)
+        values (#{cId,jdbcType=INTEGER}, #{cName,jdbcType=VARCHAR}, #{tId,jdbcType=INTEGER},
+        #{cType,jdbcType=VARCHAR}, #{cCredit,jdbcType=INTEGER}, #{cPeriod,jdbcType=INTEGER},
+        #{cTime,jdbcType=TIMESTAMP}, #{cUnit,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.stusys.entity.Course">
+        insert into course
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cId != null">
+                c_id,
+            </if>
+            <if test="cName != null">
+                c_name,
+            </if>
+            <if test="tId != null">
+                t_id,
+            </if>
+            <if test="cType != null">
+                c_type,
+            </if>
+            <if test="cCredit != null">
+                c_credit,
+            </if>
+            <if test="cPeriod != null">
+                c_period,
+            </if>
+            <if test="cTime != null">
+                c_time,
+            </if>
+            <if test="cUnit != null">
+                c_unit,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cId != null">
+                #{cId,jdbcType=INTEGER},
+            </if>
+            <if test="cName != null">
+                #{cName,jdbcType=VARCHAR},
+            </if>
+            <if test="tId != null">
+                #{tId,jdbcType=INTEGER},
+            </if>
+            <if test="cType != null">
+                #{cType,jdbcType=VARCHAR},
+            </if>
+            <if test="cCredit != null">
+                #{cCredit,jdbcType=INTEGER},
+            </if>
+            <if test="cPeriod != null">
+                #{cPeriod,jdbcType=INTEGER},
+            </if>
+            <if test="cTime != null">
+                #{cTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cUnit != null">
+                #{cUnit,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.stusys.entity.Course">
+        update course
+        <set>
+            <if test="cName != null">
+                c_name = #{cName,jdbcType=VARCHAR},
+            </if>
+            <if test="tId != null">
+                t_id = #{tId,jdbcType=INTEGER},
+            </if>
+            <if test="cType != null">
+                c_type = #{cType,jdbcType=VARCHAR},
+            </if>
+            <if test="cCredit != null">
+                c_credit = #{cCredit,jdbcType=INTEGER},
+            </if>
+            <if test="cPeriod != null">
+                c_period = #{cPeriod,jdbcType=INTEGER},
+            </if>
+            <if test="cTime != null">
+                c_time = #{cTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="cUnit != null">
+                c_unit = #{cUnit,jdbcType=INTEGER},
+            </if>
+        </set>
+        where c_id = #{cId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.stusys.entity.Course">
+        update course
+        set c_name = #{cName,jdbcType=VARCHAR},
+        t_id = #{tId,jdbcType=INTEGER},
+        c_type = #{cType,jdbcType=VARCHAR},
+        c_credit = #{cCredit,jdbcType=INTEGER},
+        c_period = #{cPeriod,jdbcType=INTEGER},
+        c_time = #{cTime,jdbcType=TIMESTAMP},
+        c_unit = #{cUnit,jdbcType=INTEGER}
+        where c_id = #{cId,jdbcType=INTEGER}
+    </update>
+
+    <select id="findAllCourse" resultMap="DetailedResultMap">
+        select *
+        from course c,teacher t,department d
+        where c.t_id=t.t_id and c.c_unit=d.d_id
+    </select>
+
+    <select id="findCourse" resultMap="DetailedResultMap">
+        select * from course c,teacher t ,department d where c.t_id=t.t_id
+        and c.c_unit=d.d_id and c.c_unit=#{cUnit}
+        <if test="startTime !=null ">
+            and c.c_time <![CDATA[>=]]> #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime !=null">
+            and c.c_time <![CDATA[<=]]> #{endTime,jdbcType=TIMESTAMP}
+        </if>
+    </select>
+
+    <delete id="deleteMoreById" parameterType="java.util.List">
+        delete from course where c_id in
+        <foreach collection="list" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

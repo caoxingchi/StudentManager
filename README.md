@@ -1,0 +1,1 @@
+## maven插件的使用，构建整体项目 框架SSM+前端：bootstrap+easyui

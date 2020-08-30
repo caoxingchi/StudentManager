@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stusys.dao.ClassesMapper" >
+  <resultMap id="BaseResultMap" type="com.stusys.entity.Classes" >
+    <id column="cl_id" property="clId" jdbcType="INTEGER" />
+    <result column="cl_name" property="clName" jdbcType="VARCHAR" />
+    <result column="cl_teacher" property="clTeacher" jdbcType="INTEGER" />
+    <result column="cl_major" property="clMajor" jdbcType="INTEGER" />
+  </resultMap>
+
+  <resultMap id="withTeacher" type="com.stusys.entity.Classes" extends="BaseResultMap">
+    <association property="teacher" select="com.stusys.dao.TeacherMapper.selectByPrimaryKey" column="cl_teacher"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    cl_id, cl_name, cl_teacher, cl_major
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from classes
+    where cl_id = #{clId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectClassesByMajor" resultMap="withTeacher">
+    select * from classes where cl_major=#{mId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from classes
+    where cl_id = #{clId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.stusys.entity.Classes" >
+    insert into classes (cl_id, cl_name, cl_teacher, 
+      cl_major)
+    values (#{clId,jdbcType=INTEGER}, #{clName,jdbcType=VARCHAR}, #{clTeacher,jdbcType=INTEGER}, 
+      #{clMajor,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.stusys.entity.Classes" >
+    insert into classes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="clId != null" >
+        cl_id,
+      </if>
+      <if test="clName != null" >
+        cl_name,
+      </if>
+      <if test="clTeacher != null" >
+        cl_teacher,
+      </if>
+      <if test="clMajor != null" >
+        cl_major,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="clId != null" >
+        #{clId,jdbcType=INTEGER},
+      </if>
+      <if test="clName != null" >
+        #{clName,jdbcType=VARCHAR},
+      </if>
+      <if test="clTeacher != null" >
+        #{clTeacher,jdbcType=INTEGER},
+      </if>
+      <if test="clMajor != null" >
+        #{clMajor,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.stusys.entity.Classes" >
+    update classes
+    <set >
+      <if test="clName != null" >
+        cl_name = #{clName,jdbcType=VARCHAR},
+      </if>
+      <if test="clTeacher != null" >
+        cl_teacher = #{clTeacher,jdbcType=INTEGER},
+      </if>
+      <if test="clMajor != null" >
+        cl_major = #{clMajor,jdbcType=INTEGER},
+      </if>
+    </set>
+    where cl_id = #{clId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.stusys.entity.Classes" >
+    update classes
+    set cl_name = #{clName,jdbcType=VARCHAR},
+      cl_teacher = #{clTeacher,jdbcType=INTEGER},
+      cl_major = #{clMajor,jdbcType=INTEGER}
+    where cl_id = #{clId,jdbcType=INTEGER}
+  </update>
+</mapper>

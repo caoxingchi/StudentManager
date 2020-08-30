@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 配置全局参数-->
+	<settings>
+		<!--执行时日志输出sql语句 -->
+		<setting name="logImpl" value="LOG4J"/>
+        <!--二级缓存的配置 缓存实体要实现序列化接口，因为会将缓存对象存到本地文件-->
+        <setting name="cacheEnabled" value="true"/>
+		<!--使用列别名替换列名-->
+		<setting name="useColumnLabel" value="true"/>
+		<!-- 开启驼峰命名转换:Table{create_time} -> Entity{createTime} -->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+    <!--<settings>-->
+        <!--&lt;!&ndash;打开延迟加载的开关 &ndash;&gt;-->
+        <!--<setting name="lazyLoadingEnabled" value="true"/>-->
+        <!--&lt;!&ndash;将积极加载改为消极加载 即按需要加载 &ndash;&gt;-->
+        <!--<setting name="aggressiveLazyLoading" value="false"/>-->
+    <!--</settings>-->
+</configuration>

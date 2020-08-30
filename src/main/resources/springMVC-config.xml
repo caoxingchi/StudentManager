@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+         https://www.springframework.org/schema/context/spring-context.xsd
+         http://www.springframework.org/schema/mvc
+         https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--配置spring-mvc -->
+    <!--定义控制器位置，扫描该包下所有注解 -->
+    <context:component-scan base-package="com.stusys.controller"/>
+    <!--<context:annotation-config/>-->
+    <!--注册注解驱动，创建controller对象 -->
+    <mvc:annotation-driven conversion-service="conversionService" />
+    <!--配置自定义的日期转换器 -->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <list>
+                <bean class="com.stusys.utils.DateConvert"/>
+            </list>
+        </property>
+    </bean>
+    <!--静态资源默认servlet配置
+            (1)加入对静态资源的处理：js,gif,png
+            (2)允许使用"/"做整体映射
+         -->
+    <mvc:default-servlet-handler/>
+
+    <!--静态资源文件的开放-->
+    <mvc:resources mapping="/bootstrap-js/**" location="/bootstrap-js/"/>
+    <mvc:resources mapping="/EasyUI/**" location="/EasyUI/"/>
+    <mvc:resources mapping="/images/**" location="/images/"/>
+    <mvc:resources mapping="/modal_file/**" location="/modal_file/"/>
+    <mvc:resources mapping="/js/**" location="/js/"/>
+    <mvc:resources mapping="/files/**" location="/files/"/>
+    <!--404页面资源开放-->
+    <mvc:resources mapping="/errorPage/**" location="/errorPage/"/>
+
+    <!--返回结果处理器 ，配置视图解析器，定义视图界面所在位置-->
+    <!--prefix="/"表示视图页面在web目录的根目录下-->
+    <!--suffix=".jsp"表示视图是jsp文件-->
+    <bean id="resourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/managePage/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--在WEB-INF下面的页面拦截-->
+            <mvc:mapping path="/managerMain"/>
+            <mvc:mapping path="/studentInfo"/>
+            <mvc:mapping path="/teacherInfo"/>
+            <!--登录拦截器-->
+            <bean class="com.stusys.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

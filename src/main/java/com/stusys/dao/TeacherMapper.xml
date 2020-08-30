@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stusys.dao.TeacherMapper">
+  <resultMap id="BaseResultMap" type="com.stusys.entity.Teacher">
+    <id column="t_id" jdbcType="INTEGER" property="tId" />
+    <result column="t_name" jdbcType="VARCHAR" property="tName" />
+    <result column="t_gender" jdbcType="VARCHAR" property="tGender" />
+    <result column="t_dep" jdbcType="INTEGER" property="tDep" />
+    <result column="t_tel" jdbcType="VARCHAR" property="tTel" />
+    <result column="t_birthday" jdbcType="TIMESTAMP" property="tBirthday" />
+    
+    <association property="department" select="com.stusys.dao.DepartmentMapper.selectByPrimaryKey" column="t_dep"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    t_id, t_name, t_gender, t_dep, t_tel, t_birthday
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from teacher
+    where t_id = #{tId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from teacher
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from teacher
+    where t_id = #{tId,jdbcType=INTEGER}
+  </delete>
+
+  <!--删除多行的操作-->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from teacher where t_id in
+    <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.stusys.entity.Teacher">
+    insert into teacher (t_id, t_name, t_gender, 
+      t_dep, t_tel, t_birthday
+      )
+    values (#{tId,jdbcType=INTEGER}, #{tName,jdbcType=VARCHAR}, #{tGender,jdbcType=VARCHAR}, 
+      #{tDep,jdbcType=INTEGER}, #{tTel,jdbcType=VARCHAR}, #{tBirthday,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.stusys.entity.Teacher">
+    insert into teacher
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tId != null">
+        t_id,
+      </if>
+      <if test="tName != null">
+        t_name,
+      </if>
+      <if test="tGender != null">
+        t_gender,
+      </if>
+      <if test="tDep != null">
+        t_dep,
+      </if>
+      <if test="tTel != null">
+        t_tel,
+      </if>
+      <if test="tBirthday != null">
+        t_birthday,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tId != null">
+        #{tId,jdbcType=INTEGER},
+      </if>
+      <if test="tName != null">
+        #{tName,jdbcType=VARCHAR},
+      </if>
+      <if test="tGender != null">
+        #{tGender,jdbcType=VARCHAR},
+      </if>
+      <if test="tDep != null">
+        #{tDep,jdbcType=INTEGER},
+      </if>
+      <if test="tTel != null">
+        #{tTel,jdbcType=VARCHAR},
+      </if>
+      <if test="tBirthday != null">
+        #{tBirthday,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.stusys.entity.Teacher">
+    update teacher
+    <set>
+      <if test="tName != null">
+        t_name = #{tName,jdbcType=VARCHAR},
+      </if>
+      <if test="tGender != null">
+        t_gender = #{tGender,jdbcType=VARCHAR},
+      </if>
+      <if test="tDep != null">
+        t_dep = #{tDep,jdbcType=INTEGER},
+      </if>
+      <if test="tTel != null">
+        t_tel = #{tTel,jdbcType=VARCHAR},
+      </if>
+      <if test="tBirthday != null">
+        t_birthday = #{tBirthday,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.stusys.entity.Teacher">
+    update teacher
+    set t_name = #{tName,jdbcType=VARCHAR},
+      t_gender = #{tGender,jdbcType=VARCHAR},
+      t_dep = #{tDep,jdbcType=INTEGER},
+      t_tel = #{tTel,jdbcType=VARCHAR},
+      t_birthday = #{tBirthday,jdbcType=TIMESTAMP}
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+</mapper>
